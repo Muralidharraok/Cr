@@ -14,14 +14,15 @@ BufferedReader br;
 PrintWriter output;
 String messagec;
 Socket link=null;
-String e[]=new String[1000];
+String e[]=new String[100];
+String r[]=new String[100];
  int i=0;
 static Connection con;
 static Statement stm;
 static ResultSet rs;
 public Crserver() {
         initComponents();
-        jTextArea1.setText("Welcome");
+        jTextArea1.setText("Welcome \n");
          try
          {
              Class.forName("com.mysql.jdbc.Driver");
@@ -31,15 +32,21 @@ public Crserver() {
              rs=stm.executeQuery(s);
              String ex,ea;
              //e=new String[];
-            
-             while(rs.next())
+            rs.afterLast();
+             while(rs.previous())
               {
                ex=rs.getString(1);
-               ea=ex+"\n";
-               jTextArea1.append(ea);
+               if(ex.equals("Connection established"))
+               {
+                   break;
+               }
                e[i]=ex;
+               ea=ex+"\n";
+               r[i]=ea;
                i++;
               }
+             for(int k=i-1;k>=0;k--)
+                jTextArea1.append(r[k]);
          }
          catch(ClassNotFoundException e)
           {
@@ -66,11 +73,14 @@ public Crserver() {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(0, 0, 0));
+        jPanel1.setBackground(new java.awt.Color(204, 255, 204));
         jPanel1.setForeground(new java.awt.Color(255, 255, 255));
 
+        jTextArea1.setEditable(false);
+        jTextArea1.setBackground(new java.awt.Color(182, 214, 235));
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
+        jTextArea1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
         jScrollPane1.setViewportView(jTextArea1);
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
@@ -180,12 +190,12 @@ public Crserver() {
              output=new PrintWriter(link.getOutputStream(),true);
              br=new BufferedReader(new InputStreamReader(link.getInputStream()));
              
-             for(int j=0;j<i;j++)
+             for(int j=i-1;j>=0;j--)
              {
                  output.println(e[j]);
                  System.out.println(e[j]);
              }
-             output.println("\n connection establish");
+             output.println("\nConnection established");
              while(true)
              {
              if(flag==true)
